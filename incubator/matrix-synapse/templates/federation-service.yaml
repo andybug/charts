@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "matrix-synapse.fullname" . }}-federation
+  labels:
+    app: {{ template "matrix-synapse.name" . }}
+    chart: {{ template "matrix-synapse.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.federationService.type }}
+  ports:
+    - name: federation
+      port: {{ .Values.federationService.servicePort }}
+      targetPort: federation
+      {{- if (and (eq .Values.federationService.type "NodePort") (.Values.federationService.nodePort)) }}
+      nodePort: {{ .Values.federationService.nodePort }}
+      {{- end }}
+      protocol: TCP
+  selector:
+    app: {{ template "matrix-synapse.name" . }}
+    release: {{ .Release.Name }}

@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "matrix-synapse.fullname" . }}-client
+  labels:
+    app: {{ template "matrix-synapse.name" . }}
+    chart: {{ template "matrix-synapse.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.clientService.type }}
+  ports:
+    - port: {{ .Values.clientService.servicePort }}
+      targetPort: client
+      protocol: TCP
+      name: client
+  selector:
+    app: {{ template "matrix-synapse.name" . }}
+    release: {{ .Release.Name }}
